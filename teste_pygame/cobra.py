@@ -15,7 +15,7 @@ x=cobra_x
 y=cobra_y
 jogando=True
 hip=math.sqrt((50*50)+(50*50))
-gspeed=250/((hip-50)*100)
+gspeed=250/((hip-50)/(0.1*0.1))
 print(gspeed)
 
 while jogando:
