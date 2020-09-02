@@ -1,57 +1,88 @@
-import pygame as pg
+import pygame
+from pygame.locals import *
+import math
+
+
+
+class Vertice:
+    def __init__(self,x,y,z):
+        self.z=z
+        self.x=x/z
+        self.y=y/z
+
+class Aresta:
+    def __init__(self,tamanho,grossura,inicio,fim):
+        self.tamanho=tamanho
+        self.inicio=inicio
+        self.fim=fim
+
+        self.rect_orig=pygame.Surface((grossura,tamanho))
+        self.rect_orig.set_colorkey((0,0,0))
+        self.rect_orig.fill((0,255,0))
+
+        self.imagen=self.rect_orig.copy()
+        self.imagen.set_colorkey((0,0,0))
+        self.rect=self.imagen.get_rect()
+        self.rect.center=((inicio[0]+fim[0])/2,(inicio[1]+fim[1])/2)
+
+    def angulo(self,a,b):
+
+        dotProduct = a[0]*b[0] + a[1]*b[1]
+        modOfVector1 = math.sqrt( a[0]*a[0] + a[1]*a[1])*math.sqrt(b[0]*b[0] + b[1]*b[1])
+        angle = dotProduct/modOfVector1
+        return math.degrees(math.acos(angle))
+
+
+
+
+
+    def rodar(self,tela):
+        old_center = self.rect.center
+
+        rot = self.angulo(self.inicio,self.fim)
+        # rotating the orignal image
+        print(rot)
+        nova_imagen = pygame.transform.rotate(self.rect_orig , -90+2*rot)
+        rect = nova_imagen.get_rect()
+        # set the rotated rectangle to the old center
+        rect.center = old_center
+        # drawing the rotated rectangle to the screen
+        tela.blit(nova_imagen , rect)
+        pygame.draw.rect(tela,(0,255,0),(self.inicio[0],self.inicio[1],10,10))
+        pygame.draw.rect(tela,(0,255,0),(self.inicio[0],self.inicio[1],10,10))
+
+
+class Triangulo:
+    def __init__(self,v1,v2,v3,a1,a2,a3):
+        self.vertices=[v1,v2,v3]
+        self.arestas=[a1,a2,a3]
+
+
+
+
+
+
 
 
 def main():
-    screen = pg.display.set_mode((640, 480))
-    font = pg.font.Font(None, 32)
-    clock = pg.time.Clock()
-    input_box = pg.Rect(100, 100, 140, 32)
-    color_inactive = pg.Color('lightskyblue3')
-    color_active = pg.Color('dodgerblue2')
-    color = color_inactive
-    active = False
-    text = ''
+    tela = pygame.display.set_mode((640, 480))
+    font = pygame.font.Font(None, 32)
+    clock = pygame.time.Clock()
+
     done = False
-
+    aresta=Aresta(50,2,(100,200),(400,150))
     while not done:
-        for event in pg.event.get():
-            if event.type == pg.QUIT:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
                 done = True
-            if event.type == pg.MOUSEBUTTONDOWN:
-                # If the user clicked on the input_box rect.
-                if input_box.collidepoint(event.pos):
-                    # Toggle the active variable.
-                    active = not active
-                else:
-                    active = False
-                # Change the current color of the input box.
-                color = color_active if active else color_inactive
-            if event.type == pg.KEYDOWN:
-                if active:
-                    if event.key == pg.K_RETURN:
-                        print(text)
-                        text = ''
-                    elif event.key == pg.K_BACKSPACE:
-                        text = text[:-1]
-                    else:
-                        text += event.unicode
+        aresta.rodar(tela)
 
-        screen.fill((30, 30, 30))
-        # Render the current text.
-        txt_surface = font.render(text, True, color)
-        # Resize the box if the text is too long.
-        width = max(200, txt_surface.get_width()+10)
-        input_box.w = width
-        # Blit the text.
-        screen.blit(txt_surface, (input_box.x+5, input_box.y+5))
-        # Blit the input_box rect.
-        pg.draw.rect(screen, color, input_box, 2)
 
-        pg.display.flip()
+        pygame.display.flip()
         clock.tick(30)
 
 
 if __name__ == '__main__':
-    pg.init()
+    pygame.init()
     main()
-    pg.quit()
+    pygame.quit()
