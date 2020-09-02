@@ -30,6 +30,20 @@ class Main:
 
         self.background_menu=pygame.Rect(self.tela_x-200,0,200,self.tela_y)
 
+    def mudar_cubo(self,propriedade,cubo,var):
+        for i in range(len(self.cubos)):
+            if self.cubos[i] == cubo:
+                if propriedade=='tamanho':
+                    self.cubos[i].largura_aresta=var
+                elif propriedade=='x':
+                    self.cubos[i].pos[0]=var
+                elif propriedade=='y':
+                    self.cubos[i].pos[1]=var
+                elif propriedade=='velocidade':
+                    self.cubos[i].vel_rotacao=var
+
+
+
 
     def rodar(self):
         pygame.display.set_caption('Formas')
@@ -63,7 +77,10 @@ class Main:
                     # If the user clicked on the input_box rect.
                     for cubo in self.cubos:
                         if cubo.centro.collidepoint(event.pos):
-                            self.textos.append(Texto(str(cubo.largura_aresta),(0,0,210),810,textos[len(textos)-1].pos_input[1]+25,20,False))
+                            for texto in self.textos:
+                                texto.get_cubo(cubo)
+
+
                     for texto in self.textos:
                         if texto.input and (texto.input_box.collidepoint(event.pos)):
                             # Toggle the active variable.
@@ -74,7 +91,7 @@ class Main:
                     for texto in self.textos:
                         if texto.digitando:
                             if event.key == pygame.K_RETURN:
-                                print(texto.input_str)
+                                self.mudar_cubo(texto.str_texto,texto.cubo,float(texto.input_str))
                                 texto.input_str = ''
                             elif event.key == pygame.K_BACKSPACE:
                                 texto.input_str= texto.input_str[:-1]
@@ -96,8 +113,9 @@ class Main:
 
 
 
-cubos=[Cubo(50,700,500,0.4,(255,0,0)),Cubo(75,50,50,0.6,(255,255,255)),Cubo(130,30,400,0.3,(0,255,0)),Cubo(100,650,250,0.5,(0,0,255)),Cubo(100,600,50,0.1,(255,255,0)),Cubo(87,650,150,0.2,(139,69,19))]
-textos=[Texto("testando menu",(210,0,0),810,50,20,True),Texto('teste 2',(0,210,0),810,100,20,True)]
+cubos=[Cubo(50,300,200,0.4,(255,0,0)),Cubo(50,300,300,0.4,(255,0,0))]
+textos=[Texto('tamanho',(0,0,210),810,20,20,True),Texto('x',(0,0,210),810,70,20,True),Texto('y',(0,0,210),810,120,20,True),Texto('velocidade',(0,0,210),810,170,20,True)]
+
 
 main=Main(1000,600,textos,cubos)
 

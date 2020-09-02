@@ -6,7 +6,7 @@ class Cubo:
     def __init__(self,aresta,x,y,vel_rotacao,cor):
         self.largura_aresta=aresta
         self.grossura_aresta=(self.largura_aresta//50)+1
-        self.pos=(x,y)
+        self.pos=[x,y]
         self.hipotenusa=math.sqrt((aresta**2)+(aresta**2))
         self.vel_rotacao=vel_rotacao
         self.figura_grow=(self.hipotenusa-aresta)/((aresta/2)/self.vel_rotacao)
@@ -62,6 +62,7 @@ class Cubo:
 
 class Texto:
     def __init__(self,texto,cor,x,y,tamanho,input):
+        self.str_texto=texto
         self.tamanho=tamanho
         self.cor=cor
         self.pos_input=(x,y)
@@ -83,7 +84,8 @@ class Texto:
             pygame.draw.rect(tela,self.cor_input,self.input_box)
             tela.blit(self.input_text,(self.input_rect.x,self.input_rect.y))
 
-
+    def get_cubo(self, cubo):
+        self.cubo=cubo
 
 
     def gerar_input(self):
